@@ -13,9 +13,8 @@ Integrating ACR with your Continuous Integration/Continuous Deployment (CI/CD) p
 **Deploy**: Once validated, the pipeline can deploy them to your AKS cluster. \
 This integration ensures that your applications are always up-to-date and that deployments are consistent and reliable.
 
-## CREATE AN AKS Cluster
 
-### Create a resource-group 
+## Create a resource-group, ACR repo and the AKS Cluster 
 A resource group in Azure is a logical container that holds related resources for an Azure solution. It allows you to manage and organize resources such as virtual machines, storage accounts, and databases collectively. Each resource in Azure must be part of a resource group.
 
 Importance of a Resource Group
@@ -40,6 +39,26 @@ az acr create --resource-group <ResourceGroupName> --name <RegistryName> --sku <
 ```
 e.g.
 ```sh
-az acr create --resource-group aks-workshop --name aks-workshop-acr01 --sku basic
+az acr create --resource-group aks-workshop --name aksworkshop01 --sku basic
 ```
 
+Now we can create the AKS cluster...
+```sh
+az aks create --resource-group aks-workshop --name myAKSCluster --node-count 1 --node-vm-size Standard_B2s --generate-ssh-keys
+```
+
+The cluster we have created will have a single node on it. By default AKS nodepools do not scale down to 0. However you can manually scale the node pool to zero using the Azure CLI when required. Here’s how you can do it:
+```sh
+az aks scale --resource-group aks-workshop --name myAKSCluster --node-count 0
+```
+
+
+## Connect to cluster using kubectl
+Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command.
+```sh
+az aks get-credentials --resource-group aks-workshop --name myAKSCluster
+```
+![Alt text](./media/04.png)
+
+Check successful operation with kubectl get nodes...
+![Alt text](./media/05.png)
