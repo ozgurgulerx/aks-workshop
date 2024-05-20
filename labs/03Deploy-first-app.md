@@ -8,4 +8,4 @@ Let's first increase the number of nodes in the cluster to 2. (It will take a co
 az aks scale --resource-group aks-workshop --name myAKSCluster --node-count 2
 ```
 Confirm the node count increase...
-![Alt text](./media/07.png)
+![Alt text](../media/07.png)
