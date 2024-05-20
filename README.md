@@ -13,8 +13,9 @@
 [![Version](https://img.shields.io/github/v/release/ozgurgulerx/aks-workshop?include_prereleases)](https://github.com/ozgurgulerx/aks-workshop/releases)
 [![Downloads](https://img.shields.io/github/downloads/ozgurgulerx/aks-workshop/total)](https://github.com/ozgurgulerx/aks-workshop/releases)
 
-This workshop content is created for speedy onboarding of Azure customer to AKS service. \
-Document as it is covers basic scenarios for AKS enablement.
+Welcome to the Azure Kubernetes Service (AKS) Workshop! This workshop content is designed to facilitate the speedy onboarding of Azure customers to the AKS service.
 
+## Introduction
+This workshop provides a comprehensive guide to getting started with AKS, covering essential scenarios to enable you to efficiently deploy, manage, and scale containerized applications using Kubernetes on Azure. Whether you are new to AKS or looking to deepen your understanding, this documentation will help you navigate through the key concepts and practical steps needed for successful AKS implementation.
 
-[01 Getting Started](./01GettingStarted.md)
+[01 Getting Started - Environment Setup](./01GettingStarted.md)
