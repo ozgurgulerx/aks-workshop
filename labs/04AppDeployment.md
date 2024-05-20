@@ -346,6 +346,156 @@ Check the redis-replica service by running the following command:
 kubectl get service
 ```
 
-![Alt text](../media/24.png)
+![Alt text](../media/25.png)
 
 You now have a Redis cluster up and running, with a single master and two replicas. In the next section, you will deploy and expose the front end.
+
+
+## Deploying and exposing the front end
+
+Up to now, you have focused on the Redis back end. Now you are ready to deploy the front end. This will add a graphical web page to your application that you'll be able to interact with.
+
+You can create the front end using the following command:
+
+```
+kubectl apply -f 04frontend-deployment.yaml
+```
+
+To verify the deployment, run this command:
+```
+kubectl get pods
+```
+This will display the output shown in Figure 3.13:
+
+![Alt text](../media/26.png)
+
+You will notice that this deployment specifies 3 replicas. The deployment has the usual aspects with minor changes, as shown in the following code:
+
+1  apiVersion: apps/v1
+
+2   kind: Deployment
+
+3   metadata:
+
+4     name: frontend
+
+5     labels:
+
+6       app: guestbook
+
+7   spec:
+
+8     selector:
+
+9       matchLabels:
+
+10        app: guestbook
+
+11        tier: frontend
+
+12    replicas: 3
+
+13    template:
+
+14      metadata:
+
+15        labels:
+
+16          app: guestbook
+
+17          tier: frontend
+
+18      spec:
+
+19        containers:
+
+20        - name: php-redis
+
+21          image: gcr.io/google-samples/gb-frontend:v4
+
+22          resources:
+
+23            requests:
+
+24              cpu: 100m
+
+25              memory: 100Mi
+
+26          env:
+
+27          - name: GET_HOSTS_FROM
+
+28            value: env
+
+29          - name: REDIS_SLAVE_SERVICE_HOST
+
+30            value: redis-replica
+
+31          ports:
+
+32          - containerPort: 80
+
+Let's see these changes:
+
+Line 11: The replica count is set to 3.
+
+Line 8-10 and 14-16: The labels are set to app: guestbook and tier: frontend.
+
+Line 20: gb-frontend:v4 is used as the image.
+You have now created the front-end deployment. You now need to expose it as a service.
+
+## Exposing the front-end service 
+
+There are multiple ways to define a Kubernetes service. The two Redis services we created were of the type ClusterIP. This means they are exposed on an IP that is reachable only from the cluster.
+
+![Alt text](../media/27.png)
+
+Another type of service is the type NodePort. A service of type NodePort is accessible from outside the cluster, by connecting to the IP of a node and the specified port.
+
+![Alt text](../media/28.png)
+
+A final type – which will be used in this example – is the LoadBalancer type. This will create an Azure Load Balancer that will get a public IP that you can use to connect to.
+
+![Alt text](../media/29.png)
+
+The following code will help you to understand how the frontend service is exposed:
+
+1   apiVersion: v1
+
+2   kind: Service
+
+3   metadata:
+
+4     name: frontend
+
+5     labels:
+
+6       app: guestbook
+
+7       tier: frontend
+
+8   spec:
+
+9     type: LoadBalancer # line uncommented
+
+10    ports:
+
+11    - port: 80
+
+12    selector:
+
+13      app: guestbook
+
+14      tier: frontend
+
+This definition is similar to the services you created earlier, except that in line 9 you defined type: Load Balancer. This will create a service of that type, which will cause AKS to add rules to the Azure load balancer.
+
+Now that you have seen how a front-end service is exposed, let's make the guestbook application ready for use with the following steps:
+
+Now that you have seen how a front-end service is exposed, let's make the guestbook application ready for use with the following steps:
+
+To create the service, run the following command:
+kubectl create -f frontend-service.yaml
+This step takes some time to execute when you run it for the first time. In the background, Azure must perform a couple of actions to make it seamless. It has to create an Azure load balancer and a public IP and set the port-forwarding rules to forward traffic on port 80 to internal ports of the cluster.
+Run the following until there is a value in the EXTERNAL-IP column:
+kubectl get service -w
