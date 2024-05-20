@@ -492,10 +492,34 @@ This definition is similar to the services you created earlier, except that in l
 
 Now that you have seen how a front-end service is exposed, let's make the guestbook application ready for use with the following steps:
 
-Now that you have seen how a front-end service is exposed, let's make the guestbook application ready for use with the following steps:
-
 To create the service, run the following command:
+```
 kubectl create -f frontend-service.yaml
+```
 This step takes some time to execute when you run it for the first time. In the background, Azure must perform a couple of actions to make it seamless. It has to create an Azure load balancer and a public IP and set the port-forwarding rules to forward traffic on port 80 to internal ports of the cluster.
 Run the following until there is a value in the EXTERNAL-IP column:
+
+```
 kubectl get service -w
+```
+
+![Alt text](../media/30.png)
+
+Confirm the configuration in the portal as below...
+![Alt text](../media/31.png)
+
+![Alt text](../media/32.png)
+
+## The guestbook application in action
+
+Type the public IP of the service in your favorite browser. 
+
+![Alt text](../media/33.png)
+
+Go ahead and record your messages. They will be saved. Open another browser and type the same IP; you will see all the messages you typed.
+
+# Congratulations – you have completed your first fully deployed, multi-tier, cloud-native Kubernetes application!
+
+
+
+
