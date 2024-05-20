@@ -1,5 +1,4 @@
-# aks-workshop
-#AKS-WORKSHOP - OZGURGULER 
+# AKS-WORKSHOP - OZGURGULER 
 
 [![GitHub stars](https://img.shields.io/github/stars/ozgurgulerx/aks-workshop)](https://github.com/ozgurgulerx/aks-workshop/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/ozgurgulerx/aks-workshop)](https://github.com/ozgurgulerx/aks-workshop/network)
@@ -14,3 +13,8 @@
 [![Version](https://img.shields.io/github/v/release/ozgurgulerx/aks-workshop?include_prereleases)](https://github.com/ozgurgulerx/aks-workshop/releases)
 [![Downloads](https://img.shields.io/github/downloads/ozgurgulerx/aks-workshop/total)](https://github.com/ozgurgulerx/aks-workshop/releases)
 
+This workshop content is created for speedy onboarding of Azure customer to AKS service. \
+Document as it is covers basic scenarios for AKS enablement.
+
+
+[01 Getting Started](./01GettingStarted.md)
