@@ -564,7 +564,9 @@ helm repo add bitnami \
  https://charts.bitnami.com/bitnami
 ```
 2. To install WordPress, run the following command:
+```
 helm install handsonakswp bitnami/wordpress
+```
 This execution will cause Helm to install the chart detailed at https://github.com/bitnami/charts/tree/master/bitnami/wordpress.
 It takes some time for Helm to install and the site to come up. Let's look at a key concept, PersistentVolumeClaims, while the site is loading. After covering this, we'll go back and look at your site that got created.
 
@@ -578,4 +580,121 @@ Unlike stateless applications, such as our front ends, MariaDB requires careful 
 
 Running the following command, you can see that MariaDB has a predictable number attached to it, whereas the WordPress deployment has a random number attached to the end:
 
-kubectl get pods
+![Alt text](../media/34.png)
+
+The numbering reinforces the ephemeral nature of the deployment pods versus the StatefulSet pods.
+
+Another difference is how pod deletion is handled. When a deployment pod is deleted, Kubernetes will launch it again anywhere it can, whereas when a StatefulSet pod is deleted, Kubernetes will relaunch it only on the node it was running on. It will relocate the pod only if the node is removed from the Kubernetes cluster.
+
+Often, you will want to attach storage to a StatefulSet. To achieve this, a StatefulSet requires a PersistentVolume (PV). This volume can be backed by many mechanisms (including blocks, such as Azure Blob, EBS, and iSCSI, and network filesystems, such as AFS, NFS, and GlusterFS). StatefulSets require either a pre-provisioned volume or a dynamically provisioned volume handled by a PersistentVolumeClaim (PVC). A PVC allows a user to dynamically request storage, which will result in a PV being created.
+
+Please refer to https://kubernetes.io/docs/concepts/storage/persistent-volumes/ for more detailed information.
+
+In this WordPress example, you are using a PVC. A PVC provides an abstraction over the underlying storage mechanism. Let's look at what the MariaDB Helm Chart did by running the following:
+
+```
+kubectl get statefulset -o yaml > mariadbss.yaml
+
+code mariadbss.yaml
+```
+
+In the preceding command, you got the YAML definition of the StatefulSet that was created and stored it in a file called mariadbss.yaml. Let's look at the most relevant parts of that YAML file. The code has been truncated to only show the most relevant parts:
+
+1   apiVersion: v1
+
+2   items:
+
+3   - apiVersion: apps/v1
+
+4     kind: StatefulSet
+
+...
+
+285           volumeMounts:
+
+286           - mountPath: /bitnami/mariadb
+
+287             name: data
+
+...           
+
+306 volumeClaimTemplates:
+
+307 - apiVersion: v1
+
+308   kind: PersistentVolumeClaim
+
+309   metadata:
+
+310     creationTimestamp: null
+
+311     labels:
+
+312       app.kubernetes.io/component: primary
+
+313       app.kubernetes.io/instance: handsonakswp
+
+314       app.kubernetes.io/name: mariadb
+
+315     name: data
+
+316   spec:
+
+317     accessModes:
+
+318     - ReadWriteOnce
+
+319     resources:
+
+320       requests:
+
+321         storage: 8Gi
+
+322     volumeMode: Filesystem
+
+...
+
+Most of the elements of the preceding code have been covered earlier in the deployment. In the following points, we will highlight the key differences, to take a look at just the PVC:
+
+Note
+
+PVC can be used by any pod, not just StatefulSet pods.
+
+Let's discuss the different elements of the preceding code in detail:
+
+Line 4: This line indicates the StatefulSet declaration.
+Lines 285-287: These lines mount the volume defined as data and mount it under the /bitnami/mariadb path.
+Lines 306-322: These lines declare the PVC. Note specifically:
+Line 315: This line gives it the name data, which is reused at line 285.
+Line 318: This line gives the access mode ReadWriteOnce, which will create block storage, which on Azure is a disk. There are other access modes as well, namely ReadOnlyMany and ReadWriteMany. As the name suggests, a ReadWriteOnce volume can only be attached to a single pod, while a ReadOnlyMany or ReadWriteMany volume can be attached to multiple pods at the same time. These last two types require a different underlying storage mechanism such as Azure Files or Azure Blob.
+Line 321: This line defines the size of the disk.
+Based on the preceding information, Kubernetes dynamically requests and binds an 8 GiB volume to this pod. In this case, the default dynamic-storage provisioner backed by the Azure disk is used. The dynamic provisioner was set up by Azure when you created the cluster. To see the storage classes available on your cluster, you can run the following command:
+
+![Alt text](../media/36.png)
+
+![Alt text](../media/37.png)
+
+When we asked for storage in the StatefulSet description (lines 128-143), Kubernetes performed Azure-disk-specific operations to get the Azure disk with 8 GiB of storage. If you copy the name of the PVC and paste that in the Azure search bar, you should find the disk that was created:
+
+![Alt text](../media/38.png)
+
+The concept of a PVC abstracts cloud provider storage specifics. This allows the same Helm template to work across Azure, AWS, or GCP. On AWS, it will be backed by Elastic Block Store (EBS), and on GCP it will be backed by Persistent Disk.
+
+Also, note that PVCs can be deployed without using Helm.
+
+In this section, the concept of storage in Kubernetes using PersistentVolumeClaim (PVC) was introduced. You saw how they were created by the WordPress Helm deployment, and how Kubernetes created an Azure disk to support the PVC used by MariaDB. In the next section, you will explore the WordPress application on Kubernetes in more detail.
+
+## Checking the WordPress deployment
+
+After our analysis of the PVCs, let's check back in with the Helm deployment. You can check the status of the deployment using:
+
+
+![Alt text](../media/39.png)
+
+We can get more info from our deployment in Helm using the following command:
+
+```
+helm status handsonakswp
+```
+
+![Alt text](../media/40.png)
