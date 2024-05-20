@@ -521,5 +521,13 @@ Go ahead and record your messages. They will be saved. Open another browser and 
 # Congratulations – you have completed your first fully deployed, multi-tier, cloud-native Kubernetes application!
 
 
+To conserve resources on your free-trial virtual machines, it is better to delete the created deployments to run the next round of the deployments by using the following commands:
+```
+kubectl delete deployment frontend redis-master redis-replica
 
+kubectl delete service frontend redis-master redis-replica
+```
 
+Over the course of the preceding sections, you have deployed a Redis cluster and deployed a publicly accessible web application. You have learned how deployments, ReplicaSets, and pods are linked, and you have learned how Kubernetes uses the service object to route network traffic. In the next section of this chapter, you will use Helm to deploy a more complex application on top of Kubernetes.
+
+![Alt text](../media/34.png)
