@@ -21,6 +21,6 @@ This workshop provides a comprehensive guide to getting started with AKS, coveri
 [01 Getting Started - Environment Setup](./labs/01GettingStarted.md) \
 [02 Create an AKS Cluster](./labs/02Create-an-AKS-Cluster.md) \
 [03 Deploy your First App - Voting App](./labs/03Deploy-first-app.md) \
-[04 Deploy your Second App - Journal App](./labs/04AppDeployment.md)
+[04 Deploy your Second App - Journal App](./labs/04AppDeployment.md) \
 [05 Scaling your cluster](./labs/05Scaling.md)
 
