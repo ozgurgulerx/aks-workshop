@@ -19,5 +19,5 @@ Welcome to the Azure Kubernetes Service (AKS) Workshop! This workshop content is
 This workshop provides a comprehensive guide to getting started with AKS, covering essential scenarios to enable you to efficiently deploy, manage, and scale containerized applications using Kubernetes on Azure. Whether you are new to AKS or looking to deepen your understanding, this documentation will help you navigate through the key concepts and practical steps needed for successful AKS implementation.
 
 [01 Getting Started - Environment Setup](./labs/01GettingStarted.md) \
-[02 Create an AKS Cluster](./labs/02Create-an-AKS-Cluster.md02Create-an-AKS-Cluster.md) \
-[03 Deploy your first App](./labs/03Deploy-first-app.md03Deploy-first-app.md)
+[02 Create an AKS Cluster](./labs/02Create-an-AKS-Cluster.md) \
+[03 Deploy your first App](./labs/03Deploy-first-app.md)
