@@ -147,7 +147,49 @@ kubectl describe deployment/redis-master
 
 ## Exposing the Redis master service
 
+**Kubernetes Service:**
 
+A Kubernetes Service is an abstraction that defines a logical set of Pods and a policy by which to access them. Services enable communication between different parts of your application and with external users, providing stable endpoints and load balancing for Pods.
+
+**Why Services are Required:**
+
+1. **Stable Networking:** Pods in Kubernetes are ephemeral; they can be created and destroyed dynamically, leading to changes in their IP addresses. Services provide a stable IP address and DNS name, ensuring that clients can reliably connect to the Pods, regardless of their individual IP addresses.
+
+2. **Load Balancing:** Services automatically distribute traffic across the set of Pods they are targeting. This load balancing ensures efficient use of resources and high availability of the application.
+
+3. **Service Discovery:** Kubernetes Services offer built-in service discovery mechanisms. Applications can discover and connect to other services using their DNS names, simplifying the configuration and integration of microservices.
+
+4. **Decoupling Components:** By using Services, different components of an application can be decoupled. Each component can communicate with others through well-defined interfaces, making it easier to scale, manage, and update individual parts without affecting the entire system.
+
+5. **External Access:** Services can expose your applications to external users. For example, a Service of type `LoadBalancer` can provision an external IP address, enabling access from outside the Kubernetes cluster.
+
+**Types of Services:**
+
+1. **ClusterIP:** The default type, which exposes the Service on an internal IP in the cluster. This type makes the Service only accessible within the cluster.
+
+2. **NodePort:** Exposes the Service on the same port of each selected Node in the cluster, making it accessible from outside the cluster using `<NodeIP>:<NodePort>`.
+
+3. **LoadBalancer:** Creates an external load balancer (if supported by the cloud provider) and assigns a fixed external IP to the Service, making it accessible from outside the cluster.
+
+4. **ExternalName:** Maps a Service to the contents of the `externalName` field (e.g., `example.com`), returning a CNAME record with the name.
+
+
+
+**Example Usage:**
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+  type: ClusterIP
 
 ```yaml
 apiVersion: v1
@@ -168,3 +210,142 @@ spec:
     tier: backend
 ```
 
+Deploy the manifest file with ...
+
+```
+kubectl apply -f redis-master-service.yaml
+```
+
+The redis-master-service.yaml file has the following content:
+
+1   apiVersion: v1
+
+2   kind: Service
+
+3   metadata:
+
+4     name: redis-master
+
+5     labels:
+
+6       app: redis
+
+7       role: master
+
+8       tier: backend
+
+9   spec:
+
+10   ports:
+
+11   - port: 6379
+
+12     targetPort: 6379
+
+13    selector:
+
+14      app: redis
+
+15      role: master
+
+16      tier: backend
+
+Let's now see what you have created using the preceding code:
+
+Lines 1-8: These lines tell Kubernetes that we want a service called redis-master, which has the same labels as our redis-master server pod.
+
+Lines 10-12: These lines indicate that the service should handle traffic arriving at port 6379 and forward it to port 6379 of the pods that match the selector defined between lines 13 and 16.
+
+Lines 13-16: These lines are used to find the pods to which the incoming traffic needs to be sent. So, any pod with labels matching (app: redis, role: master and tier: backend) is expected to handle port 6379 traffic. If you look back at the previous example, those are the exact labels we applied to that deployment.
+
+![Alt text](../media/21.png)
+
+You see that a new service, named redis-master, has been created. It has a Cluster-IP of 10.0.145.51 (in your case, the IP will likely be different). Note that this IP will work only within the cluster (hence the ClusterIP type).
+
+A service also introduces a Domain Name Server (DNS) name for that service. The DNS name is of the form <service-name>.<namespace>.svc.cluster.local; in this case, it would be redis-master.default.svc.cluster.local. To see this in action, we'll do a name resolution on our redis-master pod. The default image doesn't have nslookup installed, so we'll bypass that by running a ping command. Don't worry if that traffic doesn't return; this is because you didn't expose ping on your service, only the redis port. The command is, however, useful to see the full DNS name and the name resolution work. Let's have a look:
+
+```
+kubectl get pods
+
+#note the name of your redis-master pod
+
+kubectl exec -it redis-master-<pod-id> -- bash
+
+ping redis-master
+```
+
+This should output the resulting name resolution, showing you the Fully Qualified Domain Name (FQDN) of your service and the IP address that showed up earlier. You can stop the ping command from running by pressing Ctrl+C. You can exit the pod via the exit command, as shown below...
+
+![Alt text](../media/22.png)
+
+In this section, you exposed the Redis master using a service. This ensures that even if a pod moves to a different host, it can be reached through the service's IP address. In the next section, you will deploy the Redis replicas, which help to handle more read traffic.
+
+## Deploying the Redis replicas
+Running a single back end on the cloud is not recommended. You can configure Redis in a leader-follower (master-slave) setup. This means that you can have a master that will serve write traffic and multiple replicas that can handle read traffic. It is useful for handling increased read traffic and high availability.
+
+Let's set this up:
+
+Create the deployment by running the following command:
+```
+kubectl apply -f redis-replica-deployment.yaml
+```
+Let's check all the resources that have been created now:
+```
+kubectl get all
+```
+The output would be as shown below...
+
+
+![Alt text](../media/23.png)
+
+
+Based on the preceding output, you can see that you created two replicas of the redis-replica pods. This can be confirmed by examining the redis-replica- deployment.yaml file:
+1   apiVersion: apps/v1
+2   kind: Deployment
+3   metadata:
+4     name: redis-replica
+5     labels:
+6       app: redis
+7   spec:
+8     selector:
+9       matchLabels:
+10       app: redis
+11       role: replica
+12       tier: backend
+13   replicas: 2
+14   template:
+15     metadata:
+16       labels:
+17         app: redis
+18         role: replica
+19         tier: backend
+20     spec:
+21       containers:
+22       - name: replica
+23         image: gcr.io/google-samples/gb-redis-follower:v1 24         resources:
+25           requests:
+26             cpu: 100m
+27             memory: 100Mi
+28         env:
+29         - name: GET_HOSTS_FROM
+30           value: dns
+31         ports:
+32         - containerPort: 6379
+Everything is the same except for the following:
+Line 13: The number of replicas is 2.
+Line 23: You are now using a specific replica (follower) image.
+Lines 29-30: Setting GET_HOSTS_FROM to dns. This is a setting that specifies that Redis should get the hostname of the master using DNS.
+As you can see, this is similar to the Redis master you created earlier.
+Like the master service, you need to expose the replica service by running the following:
+```
+kubectl apply -f redis-replica-service.yaml
+```
+The only difference between this service and the redis-master service is that this service proxies traffic to pods that have the role:replica label.
+Check the redis-replica service by running the following command:
+```
+kubectl get service
+```
+
+![Alt text](../media/24.png)
+
+You now have a Redis cluster up and running, with a single master and two replicas. In the next section, you will deploy and expose the front end.
