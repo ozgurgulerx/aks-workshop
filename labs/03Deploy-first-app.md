@@ -232,3 +232,6 @@ Before moving on to the next chapter, let's clean up your deployment. Since you 
 In the next chapter, we will take an in-depth look at different deployment options to deploy applications onto AKS.
 
 ![Alt text](../media/18.png)
+
+You have now launched a Redis master with the default configuration. Typically, you would launch an application with an environment-specific configuration.
+
