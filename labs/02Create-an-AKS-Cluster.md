@@ -58,7 +58,7 @@ Configure kubectl to connect to your Kubernetes cluster using the az aks get-cre
 ```sh
 az aks get-credentials --resource-group aks-workshop --name myAKSCluster
 ```
-![Alt text](./media/04.png)
+![Alt text](../media/06.png)
 
 Check successful operation with kubectl get nodes...
-![Alt text](./media/05.png)
+![Alt text](../media/05.png)
