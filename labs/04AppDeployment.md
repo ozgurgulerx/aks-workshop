@@ -122,3 +122,17 @@ The Kubernetes YAML definition is similar to the arguments given to Docker to ru
 ```sh
 docker run --name master -p 6379:6379 -m 100M -c 100m -d k8s.gcr.io/redis:e2e
 ```
+In this section, you have deployed the Redis master and learned about the syntax of the YAML file that was used to create this deployment. In the next section, you will examine the deployment and learn about the different elements that were created.
+
+## Examining the deployment
+
+The redis-master deployment should be complete by now. Continue in the Azure Cloud Shell that you opened in the previous section and type the following:
+
+```sh
+kubectl get all
+```
+
+You should get an output similar to the one displayed below. In your case, the name of the pod and the ReplicaSet might contain different IDs at the end of the name. If you do not see a pod, a deployment, and a ReplicaSet, please run the code as explained in step 4 in the previous section again.
+
+
+![Alt text](../media/17.png)
