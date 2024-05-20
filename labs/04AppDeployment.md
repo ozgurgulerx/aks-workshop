@@ -531,3 +531,51 @@ kubectl delete service frontend redis-master redis-replica
 Over the course of the preceding sections, you have deployed a Redis cluster and deployed a publicly accessible web application. You have learned how deployments, ReplicaSets, and pods are linked, and you have learned how Kubernetes uses the service object to route network traffic. In the next section of this chapter, you will use Helm to deploy a more complex application on top of Kubernetes.
 
 ![Alt text](../media/34.png)
+
+# Installing complex Kubernetes applications using Helm
+
+Helm in Kubernetes Context
+Helm is a package manager for Kubernetes, often referred to as the "Kubernetes equivalent of apt for Debian or yum for RedHat". It simplifies the deployment and management of applications on Kubernetes by allowing you to define, install, and upgrade even the most complex Kubernetes applications. Helm uses a packaging format called charts, which are collections of files that describe a related set of Kubernetes resources.
+
+Why Helm is Necessary
+
+**Simplifies Deployment:** \
+Helm streamlines the process of deploying applications on Kubernetes. Instead of manually creating and managing multiple YAML files, you can use Helm charts to bundle your Kubernetes manifests into a single package, which can be easily installed and managed.
+
+**Versioning and Rollback:** \
+Helm maintains a history of releases, allowing you to easily roll back to a previous version of a release. This feature is crucial for managing updates and ensuring stability in production environments.
+
+**Reusability**: \
+Helm charts are reusable across different environments and teams. Once a chart is created, it can be shared and reused, promoting consistency and reducing duplication of effort.
+
+**Configuration Management**: \
+Helm allows you to define values that can be overridden during deployment, making it easier to manage configurations for different environments (development, staging, production).
+
+**Ecosystem and Community**: \
+Helm has a large ecosystem of pre-built charts available in the Helm Hub and other repositories. These charts cover a wide range of applications and services, accelerating the development and deployment process.
+
+# Installing WordPress using Helm
+
+As mentioned in the introduction, Helm has a rich library of pre-written Helm Charts. To access this library, you'll have to add a repo to your Helm client:
+
+1. Add the repo that contains the stable Helm Charts using the following command:
+```
+helm repo add bitnami \
+ https://charts.bitnami.com/bitnami
+```
+2. To install WordPress, run the following command:
+helm install handsonakswp bitnami/wordpress
+This execution will cause Helm to install the chart detailed at https://github.com/bitnami/charts/tree/master/bitnami/wordpress.
+It takes some time for Helm to install and the site to come up. Let's look at a key concept, PersistentVolumeClaims, while the site is loading. After covering this, we'll go back and look at your site that got created.
+
+## PersistentVolumeClaims
+
+A typical process requires compute, memory, network, and storage. In the guestbook example, we saw how Kubernetes helps us abstract the compute, memory, and network. The same YAML files work across all cloud providers, including a cloud-specific setup of public-facing load balancers. The WordPress example shows how the last piece, namely storage, is abstracted from the underlying cloud provider.
+
+In this case, the WordPress Helm Chart depends on the MariaDB helm chart (https://github.com/bitnami/charts/tree/master/bitnami/mariadb) for its database installation.
+
+Unlike stateless applications, such as our front ends, MariaDB requires careful handling of storage. To make Kubernetes handle stateful workloads, it has a specific object called a StatefulSet. A StatefulSet (https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) is like a deployment with the additional capability of ordering, and the uniqueness of the pods. This means that Kubernetes will ensure that the pod and its storage are kept together. Another way that StatefulSets help is with the consistent naming of pods in a StatefulSet. The pods are named <pod-name>-#, where # starts from 0 for the first pod, and 1 for the second pod.
+
+Running the following command, you can see that MariaDB has a predictable number attached to it, whereas the WordPress deployment has a random number attached to the end:
+
+kubectl get pods
