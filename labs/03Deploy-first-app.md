@@ -210,3 +210,23 @@ Now, open the browser and access the external IP address of the load balancer...
 ![Alt text](../media/11.png)
 
 Confirm the app works, by pression on the voting buttons.
+
+To see all the objects in Kubernetes that were created for your application, you can use the kubectl get all command.
+![Alt text](../media/12.png)
+
+As you can see, a number of objects were created:
+
+**Pods**: You will see two pods, one for the back end and one for the front end. \
+**Services**: You will also see two services, one for the back end of type ClusterIP and one for the front end of type LoadBalancer.  deployment on AKS. \
+**Deployments**: You will also see two deployments. \
+**ReplicaSets**: And finally you'll see two ReplicaSets. \
+
+You can also view these objects from the Azure portal. To see, for example, the two deployments, you can click on Workloads in the left-hand navigation menu of the AKS pane, and you will see all the deployments in your cluster. This figure shows you all the deployments in your cluster, including the system deployments. At the bottom of the list, you can see your own deployments. As you can also see in this figure, you can explore other objects such as pods and ReplicaSets using the top menu:
+
+![Alt text](../media/13.png)
+
+Before moving on to the next chapter, let's clean up your deployment. Since you created everything from a file, you can also delete everything by pointing Kubernetes to that file. Type kubectl delete -f azure-vote.yaml and watch all your objects get deleted:
+
+![Alt text](../media/14.png)
+
+In the next chapter, we will take an in-depth look at different deployment options to deploy applications onto AKS.
