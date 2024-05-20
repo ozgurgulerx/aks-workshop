@@ -134,5 +134,37 @@ kubectl get all
 
 You should get an output similar to the one displayed below. In your case, the name of the pod and the ReplicaSet might contain different IDs at the end of the name. If you do not see a pod, a deployment, and a ReplicaSet, please run the code as explained in step 4 in the previous section again.
 
-
 ![Alt text](../media/17.png)
+
+You can see that you created a deployment named redis-master. It controls a ReplicaSet named redis-master-fb489cc66. On further examination, you will also find that the ReplicaSet is controlling a pod, redis-master-fb489cc66-wt279. 
+
+More details can be obtained by executing the "kubectl describe <object> <instance-name>" command, as follows:
+
+```sh
+kubectl describe deployment/redis-master
+```
+
+
+## Exposing the Redis master service
+
+
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-master
+  labels:
+    app: redis
+    role: master
+    tier: backend
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+    role: master
+    tier: backend
+```
+

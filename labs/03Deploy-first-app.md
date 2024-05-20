@@ -230,3 +230,5 @@ Before moving on to the next chapter, let's clean up your deployment. Since you 
 ![Alt text](../media/14.png)
 
 In the next chapter, we will take an in-depth look at different deployment options to deploy applications onto AKS.
+
+![Alt text](../media/18.png)
