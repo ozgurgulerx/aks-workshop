@@ -138,5 +138,55 @@ Save this file, and create the HPA using the following command:
 kubectl create -f hpa.yaml
 ```
 
-Wait until the HPA gets ready...
+Wait until the HPA gets ready...\
+Once the target shows a percentage, the HPA is ready
 ![Alt text](../media/53.png)
+
+Now once our HPA is ready, we can move on with the next step...\
+Next, we will generate load for our cluster with a load generator.
+
+We will use a program called "hey" to generate this load. hey is a tiny program that sends loads to a web application. 
+
+Installing hey to CloudShell is recommended. \
+First launch a new CloudShell in the portal.
+![Alt text](../media/54.png)
+
+
+```
+export GOPATH=~/go
+export PATH=$GOPATH/bin:$PATH
+go install github.com/rakyll/hey@latest
+hey -z 20m http://<external-ip>
+```
+The hey program will now try to create up to 20 million connections to the front-end. This will generate CPU loads on the system, which will trigger the HPA to start scaling the deployment. It will take a couple of minutes for this to trigger a scale action, but at a certain point, you should see multiple pods being created to handle the additional load, 
+
+![Alt text](../media/56.png)
+Check and confirm your pods scaled up as expected...
+
+![Alt text](../media/55.png)
+
+Let's have a closer look at what the HPA did by running the following command:
+```
+kubectl describe hpa
+```
+
+![Alt text](../media/57.png)
+
+1. "metrics - resource cpu on pod" This shows you the current CPU utilization (1781%) versus the desired (50%). The current CPU utilization will likely be different in your situation.
+2. "Too many replicas" This shows you that the current desired replica count is higher than the actual maximum you had configured. This ensures that a single deployment doesn't consume all resources in the cluster.
+3. At the bottom marked with a red rectangle, shows you the scaling actions that the HPA took. It first scaled to 4, then to 8, and then to 10 pods in the deployment.
+
+
+If you wait for a couple of minutes, the HPA should start to scale down. You can track this scale-down operation using the following command:
+```
+kubectl get hpa -w
+```
+
+Before we move on to the next section, let's clean up the resources we created in this section:
+```
+kubectl delete -f hpa.yaml
+kubectl delete -f guestbook-all-in-one.yaml
+```
+In this section, you first manually and then automatically scaled an application. However, the infrastructure supporting the application was static; you ran this on a two-node cluster. In many cases, you might also run out of resources on the cluster. In the next section, you will deal with this issue and learn how you can scale the AKS cluster yourself.
+
+## Scaling your cluster
