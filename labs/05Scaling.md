@@ -199,7 +199,77 @@ You can manually scale your AKS cluster by setting a static number of nodes for 
 
 In this section, you'll learn how you can manually scale your cluster by scaling it down to one node. This will cause Azure to remove one of the nodes from your cluster. First, the workload on the node that is about to be removed will be rescheduled onto the other node. Once the workload is safely rescheduled, the node will be removed from your cluster, and then the VM will be deleted from Azure.
 
+Folow the below, UI actions and scale your node count to 1.
+
 ![Alt text](../media/60.png)
 ![Alt text](../media/61.png)
 ![Alt text](../media/62.png)
 ![Alt text](../media/63.png)
+
+confirm the scale down event, with...
+```
+kubectl get nodes 
+```
+Confirm the number of nodes gets down to 1...
+![Alt text](../media/64.png)
+
+## Scaling your cluster using the cluster autoscaler
+
+In this section, you will explore the cluster autoscaler. The cluster autoscaler will monitor the deployments in your cluster and scale your cluster to meet your application requirements. The cluster autoscaler watches the number of pods in your cluster that cannot be scheduled due to insufficient resources. You will first force your deployment to have pods that cannot be scheduled, and then configure the cluster autoscaler to automatically scale your cluster.
+
+First deploy the app with "kubectl create -f".
+To force your cluster to be out of resources, you will—manually—scale out the redis-replica  deployment. To do this, use the following command:
+
+```
+kubectl scale deployment redis-replica --replicas 5
+```
+![Alt text](../media/65.png)
+
+Two of the pods are in pending state.
+![Alt text](../media/66.png)
+
+You will now configure the cluster autoscaler to automatically scale the cluster. Similar to manual scaling in the previous section, there are two ways you can configure the cluster autoscaler. You can configure it either via the Azure portal—similar to how we did the manual scaling—or you can configure it using the command-line interface (CLI). In this example, you will use CLI to enable the cluster autoscaler. The following command will configure the cluster autoscaler for your cluster:
+
+```
+az aks nodepool update \
+  --resource-group aks-workshop \
+  --cluster-name myAKSCluster \
+  --name nodepool1 \
+  --enable-cluster-autoscaler \
+  --min-count 1 \
+  --max-count 2
+
+```
+![Alt text](../media/67.png)
+
+It will take about 5 minutes for the new node to show up and become Ready in the cluster. Once the new node is Ready, you can stop watching the nodes by hitting Ctrl + C.
+
+![Alt text](../media/68.png)
+
+The new node should ensure that your cluster has sufficient resources to schedule the scaled-out redis- replica deployment. To verify this, run the following command to check the status of the pods:
+
+Confirm with kubectl get pods...
+![Alt text](../media/69.png)
+
+Now clean up the resources you created, disable the cluster autoscaler, and ensure that your cluster has two nodes for the next example. To do this, use the following commands:
+
+```
+kubectl delete -f guestbook-all-in-one.yaml
+
+az aks nodepool update \
+--resource-group aks-workshop \
+--disable-cluster-autoscaler \
+--cluster-name myAKSCluster \
+--name nodepool1 
+
+az aks nodepool scale \
+--resource-group aks-workshop \
+--node-count 2 \
+--cluster-name myAKSCluster \
+--name nodepool1
+```
+
+The last command from the previous example will show you an error message, The new node count is the same as the current node count., if the cluster already has two nodes. You can safely ignore this error.
+
+In this section, you first manually scaled down your cluster and then used the cluster autoscaler to scale out your cluster. You used the Azure portal to scale down the cluster manually and then used the Azure CLI to configure the cluster autoscaler. In the next section, you will look into how you can upgrade applications running on AKS.
+
