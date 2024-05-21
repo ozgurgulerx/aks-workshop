@@ -66,3 +66,63 @@ Once done, check the service until a public IP is assigned to the service with..
 kubectl get service -w
 ```
 ![Alt text](../media/47.png)
+
+![Alt text](../media/48.png)
+
+Type the external IP address in the browser to access the Guestbook app...
+
+![Alt text](../media/49.png)
+
+## Scaling the guestbook front-end component
+
+Kubernetes gives us the ability to scale each component of an application dynamically. In this section, we will show you how to scale the front end of the guestbook application. Right now, the front-end deployment is deployed with three replicas. You can confirm by using the following command:
+
+To scale the front-end deployment, you can execute the following command:
+```
+kubectl scale deployment/frontend --replicas=6
+```
+![Alt text](../media/50.png)
+
+This will cause Kubernetes to add additional pods to the deployment. You can set the number of replicas you want, and Kubernetes takes care of the rest. You can even scale it down to zero (one of the tricks used to reload the configuration when the application doesn't support the dynamic reload of configuration).
+
+
+As you can see, the front-end service scaled to six pods. Kubernetes also spread these pods across multiple nodes in the cluster. You can see the nodes that this is running on with the following command...
+
+```
+kubectl get pods -o wide
+```
+![Alt text](../media/51.png)
+
+In this section, you have seen how easy it is to scale pods with Kubernetes. This capability provides a very powerful tool for you to not only dynamically adjust your application components but also provide resilient applications with failover capabilities enabled by running multiple instances of components at the same time. However, you won't always want to manually scale your application. In the next section, you will learn how you can automatically scale your application in and out by automatically adding and removing pods in a deployment.
+
+## Using the HPA
+
+Scaling manually is useful when you're working on your cluster. For example, if you know your load is going to increase, you can manually scale out your application. In most cases, however, you will want some sort of autoscaling to happen on your application. In Kubernetes, you can configure autoscaling of your deployment using an object called the Horizontal Pod Autoscaler (HPA).
+
+HPA monitors Kubernetes metrics at regular intervals and, based on the rules you define, it automatically scales your deployment. For example, you can configure the HPA to add additional pods to your deployment once the CPU utilization of your application is above 50%.
+
+In this section, you will configure the HPA to scale the front-end of the application automatically:
+
+Let's first scale down the front-end deployment with...
+```
+kubectl scale deployment/frontend --replicas=1
+```
+
+![Alt text](../media/52.png)
+
+Now first create our hpa.yaml...
+
+```yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend-scaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+```
