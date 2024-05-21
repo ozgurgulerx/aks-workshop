@@ -11,6 +11,11 @@ Login to your azure account by typing "azure login" and login to your account vi
 You use the Kubernetes CLI, kubectl, to connect to your Kubernetes cluster. If you use the Azure Cloud Shell, kubectl is already installed. If you're running the commands locally, you can use the Azure CLI or Azure PowerShell to install kubectl.
 ![Alt text](../media/03.png)
 
+## Install Helm 
+
+brew install helm 
+
+
 ## Install kubectl (optional)
 Follow the [kubernetes official documentation](https://kubernetes.io/docs/tasks/tools/install-kubectl-macos/) to install kubectl to your PC. 
 

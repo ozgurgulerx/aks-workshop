@@ -698,3 +698,25 @@ helm status handsonakswp
 ```
 
 ![Alt text](../media/40.png)
+
+Get the external IP address...
+![Alt text](../media/41.png)
+
+![Alt text](../media/42.png)
+
+To make sure you don't run into issues in the following chapters, let's delete the WordPress site. This can be done in the following way:
+
+```
+helm delete handsonakswp
+```
+
+By design, the PVCs won't be deleted. This ensures persistent data is kept. As you don't have any persistent data, you can safely delete the PVCs as well:
+
+```
+kubectl delete pvc --all
+```
+
+![Alt text](../media/42.png)
+
+In this section, you have deployed a full WordPress site using Helm. You also learned how Kubernetes handles persistent storage using PVCs.
+

@@ -12,3 +12,4 @@ spec:
   selector:
     app: guestbook
     tier: frontend
+
