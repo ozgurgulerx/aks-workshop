@@ -126,3 +126,17 @@ spec:
   maxReplicas: 10
   targetCPUUtilizationPercentage: 50
 ```
+
+Let's investigate what is configured in this file: \
+Line 2: Here, we define that we need HorizontalPodAutoscaler.\
+Lines 6-9: These lines define the deployment that we want to autoscale.\
+Lines 10-11: Here, we configure the minimum and maximum pods in our deployment.\
+Lines 12: Here, we define the target CPU utilization percentage for our deployment.
+
+Save this file, and create the HPA using the following command:
+```
+kubectl create -f hpa.yaml
+```
+
+Wait until the HPA gets ready...
+![Alt text](../media/53.png)
