@@ -18,9 +18,32 @@ Welcome to the Azure Kubernetes Service (AKS) Workshop! This workshop content is
 ## Introduction
 This workshop provides a comprehensive guide to getting started with AKS, covering essential scenarios to enable you to efficiently deploy, manage, and scale containerized applications using Kubernetes on Azure. Whether you are new to AKS or looking to deepen your understanding, this documentation will help you navigate through the key concepts and practical steps needed for successful AKS implementation.
 
+
+
+# AKS Workshop 
+
 [01 Getting Started - Environment Setup](./labs/01GettingStarted.md) \
-[02 Create an AKS Cluster](./labs/02Create-an-AKS-Cluster.md) \
+[02 Creating an AKS Cluster](./labs/02Create-an-AKS-Cluster.md) \
 [03 Deploy your First App - Voting App](./labs/03Deploy-first-app.md) \
-[04 Deploy your Second App - Journal App](./labs/04AppDeployment.md) \
-[05 Scaling your cluster](./labs/05Scaling.md)
+[04 Deploy a Multi-Tier App - Journal App](./labs/04AppDeployment.md) \
+[05 Scaling Your Cluster - Horizontal Pod AutoScaling & Cluster AutoScaling](./labs/05Scaling.md) \
+[06 Introduction to Helm](./labs/20HelmIntroduction.md) \
+07 Exposing Applications with LoadBalancers and Ingress \
+08 Securing Applications with TLS/SSL \
+09 Networking in AKS \
+10 Managing Secrets with Kubernetes and Azure Key Vault \
+11 Storage Classes and Dynamic Provisioning \
+12 Integrating with GitHub Actions \
+13 Service Mesh with Istio/Linkerd \
+14 RBAC and Security \
+15 Integrating Azure Active Directory \
+16 Persistent Volumes and Claims \
+17 Monitoring with Azure Monitor and Prometheus \
+18 Logging with Log Analytics  \
+19 Advanced Deployment Strategies \
+20 Backup and Disaster Recovery \
+21 Cost Management and Optimization \
+
+
+
 
