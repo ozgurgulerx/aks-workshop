@@ -34,10 +34,12 @@ e.g.
 az group create --name aks-workshop --location eastus
 ```
 Then create the acr repo...
+
 ```sh
 az acr create --resource-group <ResourceGroupName> --name <RegistryName> --sku <SkuTier>
 ```
-e.g.
+
+**Please note** ACR repository names are global. You may need to modify the acr name as *aksworkshop01-[companyname]* for the below acr create commend to succeed.
 ```sh
 az acr create --resource-group aks-workshop --name aksworkshop01 --sku basic
 ```
@@ -55,10 +57,42 @@ az aks scale --resource-group aks-workshop --name myAKSCluster --node-count 0
 
 ## Connect to cluster using kubectl
 Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command.
-```sh
+
+```
 az aks get-credentials --resource-group aks-workshop --name myAKSCluster
 ```
 ![Alt text](../media/06.png)
 
-Check successful operation with kubectl get nodes...
+Check successful operation with 
+```
+kubectl get nodes
+```
 ![Alt text](../media/05.png)
+
+*Note: The command az aks get-credentials --resource-group aks-workshop --name myAKSCluster retrieves the access credentials for your AKS cluster and updates the **kubeconfig** file with the necessary information to interact with the AKS cluster using kubectl.*
+
+Check Current Context: First, see which context kubectl is currently using:
+```
+kubectl config current-context
+```
+
+List all available contexts to see what options you have:
+```
+kubectl config get-contexts
+```
+
+witch back to your local Kubernetes context (replace your-local-context with the actual context name of your local Kubernetes installation):
+```
+kubectl config use-context your-local-context
+```
+
+Ensure that kubectl is now pointing to your local Kubernetes installation:
+```
+kubectl config current-context
+```
+
+It's a good practice to back up your kubeconfig file before making changes:
+```
+cp ~/.kube/config ~/.kube/config.backup
+```
+
