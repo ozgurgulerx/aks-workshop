@@ -44,7 +44,8 @@ az acr create --resource-group <ResourceGroupName> --name <RegistryName> --sku <
 az acr create --resource-group aks-workshop --name aksworkshop01 --sku basic
 ```
 
-Now we can create the AKS cluster...
+Now we can create the AKS cluster...\
+*It will take a couple of minutes for the cluster to be created. This may be a good time to refresh your coffee!*
 ```sh
 az aks create --resource-group aks-workshop --name myAKSCluster --node-count 1 --node-vm-size Standard_B2s --generate-ssh-keys
 ```

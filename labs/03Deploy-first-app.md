@@ -4,7 +4,7 @@ In this section, you will deploy your first application and inspect it using kub
 
 Let's first increase the number of nodes in the cluster to 2. (It will take a couple of minutes for the second node to launch...)
 
-```sh
+```
 az aks scale --resource-group aks-workshop --name myAKSCluster --node-count 2
 ```
 Confirm the node count increase...
@@ -192,7 +192,7 @@ Further in the spec section, containers defines the containers within the pod. T
 Now download the .yaml manifest file and deploy the app onto your cluster. \
 First download the azure-vote.yaml file from under ./code and deploy the app using...
 
-```yaml
+```
 kubectl create -f azure-vote.yaml
 ```
 

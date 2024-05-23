@@ -280,6 +280,13 @@ This should output the resulting name resolution, showing you the Fully Qualifie
 
 In this section, you exposed the Redis master using a service. This ensures that even if a pod moves to a different host, it can be reached through the service's IP address. In the next section, you will deploy the Redis replicas, which help to handle more read traffic.
 
+In the next chapter, we will take an in-depth look at different deployment options to deploy applications onto AKS.
+
+![Alt text](../media/18.png)
+
+You have now launched a Redis master with the default configuration. Typically, you would launch an application with an environment-specific configuration.
+
+
 ## Deploying the Redis replicas
 Running a single back end on the cloud is not recommended. You can configure Redis in a leader-follower (master-slave) setup. This means that you can have a master that will serve write traffic and multiple replicas that can handle read traffic. It is useful for handling increased read traffic and high availability.
 
