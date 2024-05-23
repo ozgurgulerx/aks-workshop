@@ -22,12 +22,13 @@ This workshop provides a comprehensive guide to getting started with AKS, coveri
 
 # AKS Workshop 
 
-[01 Getting Started - Environment Setup](./labs/01GettingStarted.md) \
+[01 Getting Started - Environment Setup & AKS](./labs/01GettingStarted.md) \
 [02 Creating an AKS Cluster](./labs/02Create-an-AKS-Cluster.md) \
 [03 Deploy your First App - Voting App](./labs/03Deploy-first-app.md) \
 [04 Deploy a Multi-Tier App - Journal App](./labs/04AppDeployment.md) \
-[05 Scaling Your Cluster - Horizontal Pod AutoScaling & Cluster AutoScaling](./labs/05Scaling.md) \
-[06 Introduction to Helm](./labs/20HelmIntroduction.md) \
+[05 Scaling Your Cluster with HPA -Horizontal Pod AutoScaler & Cluster AutoScaler](./labs/05Scaling.md) \
+[06 Optimising pod resource usage with VPA - Vertical Pod Autoscaler](./labs/06VPA.md) \
+
 07 Exposing Applications with LoadBalancers and Ingress \
 08 Securing Applications with TLS/SSL \
 09 Networking in AKS \

@@ -10,6 +10,9 @@ az aks scale --resource-group aks-workshop --name myAKSCluster --node-count 2
 Confirm the node count increase...
 ![Alt text](../media/07.png)
 
+We will use the *"03azure-vote.yaml"* manifest file in this lab. 
+Either download it from under ./code under the github or copy the file contents into a new file locally with the editor of your choice.
+
 ## Anatomy of a kubernetes manifest file 
 Kubernetes manifest files are essential for defining the desired state of objects deployed within a Kubernetes cluster. These files, typically written in YAML or JSON format, outline various Kubernetes resources, such as pods, deployments, and services. Each manifest file comprises several key sections, each serving a specific purpose in describing the resource configuration. The main sections of a Kubernetes manifest file include apiVersion, kind, metadata, and spec.
 
@@ -131,7 +134,7 @@ spec:
           name: redis
 ```
 
-The manifest file begins with the apiVersion: apps/v1, which specifies the API version for the deployment. The kind: Deployment indicates that this is a Deployment object, managing a set of replicas of a pod. Under metadata, the name: azure-vote-back names the Deployment "azure-vote-back".
+The manifest file begins with the apiVersion: apps/v1, which specifies the API version for the deployment. The kind: Deployment indicates that this is a **Deployment object**, managing a set of replicas of a pod. Under metadata, the name: azure-vote-back names the Deployment "azure-vote-back".
 
 In the spec section, replicas: 1 specifies that one replica of the pod should be running. The selector section with matchLabels: app: azure-vote-back matches pods with the label "app: azure-vote-back". Within the template section, under metadata, the labels: app: azure-vote-back labels the pod with "app: azure-vote-back".
 
@@ -192,18 +195,19 @@ Further in the spec section, containers defines the containers within the pod. T
 Now download the .yaml manifest file and deploy the app onto your cluster. \
 First download the azure-vote.yaml file from under ./code and deploy the app using...
 
+*(Either download 03azure-vote.yaml under ./code or copy the contents in to a local path where you will run the kubectl create command.)*
 ```
-kubectl create -f azure-vote.yaml
+kubectl create -f 03azure-vote.yaml
 ```
 
 You should see the below if the deployment is successful!
 
 ![Alt text](../media/08.png)
 
-
 ![Alt text](../media/09.png)
 
 Type the following command to get the public IP of the load balancer:
+
 ![Alt text](../media/10.png)
 
 Now, open the browser and access the external IP address of the load balancer...
@@ -225,13 +229,10 @@ You can also view these objects from the Azure portal. To see, for example, the 
 
 ![Alt text](../media/13.png)
 
-Before moving on to the next chapter, let's clean up your deployment. Since you created everything from a file, you can also delete everything by pointing Kubernetes to that file. Type kubectl delete -f azure-vote.yaml and watch all your objects get deleted:
+Before moving on to the next chapter, let's clean up your deployment. Since you created everything from a file, you can also delete everything by pointing Kubernetes to that file. Type: 
 
+```
+kubectl delete -f azure-vote.yaml 
+```
+and watch all your objects get deleted.
 ![Alt text](../media/14.png)
-
-In the next chapter, we will take an in-depth look at different deployment options to deploy applications onto AKS.
-
-![Alt text](../media/18.png)
-
-You have now launched a Redis master with the default configuration. Typically, you would launch an application with an environment-specific configuration.
-

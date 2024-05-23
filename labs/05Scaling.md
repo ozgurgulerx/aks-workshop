@@ -213,7 +213,7 @@ kubectl get nodes
 Confirm the number of nodes gets down to 1...
 ![Alt text](../media/64.png)
 
-## Scaling your cluster using the cluster autoscaler
+## Scaling your cluster using the "Cluster Autoscaler"
 
 In this section, you will explore the cluster autoscaler. The cluster autoscaler will monitor the deployments in your cluster and scale your cluster to meet your application requirements. The cluster autoscaler watches the number of pods in your cluster that cannot be scheduled due to insufficient resources. You will first force your deployment to have pods that cannot be scheduled, and then configure the cluster autoscaler to automatically scale your cluster.
 
@@ -227,6 +227,13 @@ kubectl scale deployment redis-replica --replicas 5
 
 Two of the pods are in pending state.
 ![Alt text](../media/66.png)
+
+To get more details as to the nature of load nodes are going through you may use the following set of commands... 
+```
+kubectl get nodes 
+kubectl describe node <node-name>
+kubectl top nodes 
+```
 
 You will now configure the cluster autoscaler to automatically scale the cluster. Similar to manual scaling in the previous section, there are two ways you can configure the cluster autoscaler. You can configure it either via the Azure portal—similar to how we did the manual scaling—or you can configure it using the command-line interface (CLI). In this example, you will use CLI to enable the cluster autoscaler. The following command will configure the cluster autoscaler for your cluster:
 
@@ -272,4 +279,6 @@ az aks nodepool scale \
 The last command from the previous example will show you an error message, The new node count is the same as the current node count., if the cluster already has two nodes. You can safely ignore this error.
 
 In this section, you first manually scaled down your cluster and then used the cluster autoscaler to scale out your cluster. You used the Azure portal to scale down the cluster manually and then used the Azure CLI to configure the cluster autoscaler. In the next section, you will look into how you can upgrade applications running on AKS.
+
+W
 

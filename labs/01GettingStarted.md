@@ -15,8 +15,14 @@ az account show
 ![Alt text](../media/70.png)
 
 ## Install the kubernetes CLI 
-You use the Kubernetes CLI, kubectl, to connect to your Kubernetes cluster. If you use the Azure Cloud Shell, kubectl is already installed. If you're running the commands locally, you can use the Azure CLI or Azure PowerShell to install kubectl.
+You use the Kubernetes CLI, kubectl, to connect to your Kubernetes cluster. If you use the Azure Cloud Shell, kubectl is already installed. If you're running the commands locally on your PC/MAC, you can use the Azure CLI or Azure PowerShell to install kubectl. Use [az aks install-cli](https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-install-cli) to download and install kubectl.
+
 ![Alt text](../media/03.png)
+
+Even if you have kubectl, the Azure CLI includes AKS-specific commands (az aks) that you might need. These commands help you create and manage AKS clusters, get credentials for kubectl, and perform other Azure-specific tasks.
+
+az aks install-cli command specifically installs kubectl via the Azure CLI, ensuring that the version is compatible with AKS. 
+
 
 ## Install Helm 
 
