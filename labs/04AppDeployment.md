@@ -119,6 +119,7 @@ The Kubernetes YAML definition is similar to the arguments given to Docker to ru
 
 **Run a container named master, listening on port 6379, with 100M memory and 100m CPU using the redis:e2e image.**
 
+*You do not need to run this docker command. This is to explain what the manifest file is asking k8s api-server to do!*
 ```sh
 docker run --name master -p 6379:6379 -m 100M -c 100m -d k8s.gcr.io/redis:e2e
 ```
@@ -213,7 +214,7 @@ spec:
 Deploy the manifest file with ...
 
 ```
-kubectl apply -f redis-master-service.yaml
+kubectl apply -f 04redis-master-service.yaml
 ```
 
 The redis-master-service.yaml file has the following content:
@@ -294,7 +295,7 @@ Let's set this up:
 
 Create the deployment by running the following command:
 ```
-kubectl apply -f redis-replica-deployment.yaml
+kubectl apply -f 04redis-replica-deployment.yaml
 ```
 Let's check all the resources that have been created now:
 ```
@@ -345,7 +346,7 @@ Lines 29-30: Setting GET_HOSTS_FROM to dns. This is a setting that specifies tha
 As you can see, this is similar to the Redis master you created earlier.
 Like the master service, you need to expose the replica service by running the following:
 ```
-kubectl apply -f redis-replica-service.yaml
+kubectl apply -f 04redis-replica-service.yaml
 ```
 The only difference between this service and the redis-master service is that this service proxies traffic to pods that have the role:replica label.
 Check the redis-replica service by running the following command:
@@ -501,7 +502,7 @@ Now that you have seen how a front-end service is exposed, let's make the guestb
 
 To create the service, run the following command:
 ```
-kubectl create -f frontend-service.yaml
+kubectl create -f 04frontend-service.yaml
 ```
 This step takes some time to execute when you run it for the first time. In the background, Azure must perform a couple of actions to make it seamless. It has to create an Azure load balancer and a public IP and set the port-forwarding rules to forward traffic on port 80 to internal ports of the cluster.
 Run the following until there is a value in the EXTERNAL-IP column:
@@ -727,3 +728,5 @@ kubectl delete pvc --all
 
 In this section, you have deployed a full WordPress site using Helm. You also learned how Kubernetes handles persistent storage using PVCs.
 
+WARNING!!!
+*Running databases on Kubernetes can be done and offers benefits such as portability, scalability, and declarative configuration, but it also comes with challenges. Kubernetes is designed for stateless applications, and managing stateful applications like databases introduces complexity due to persistent storage, data consistency, and backup concerns. While deploying databases via Helm charts, such as installing WordPress with a bundled database using Bitnami's Helm repository, is straightforward and suitable for development and testing environments, production use requires careful evaluation. Ensuring reliable persistent storage, high availability, and robust backup strategies is crucial. For production environments, consider alternatives like managed database services from cloud providers or a hybrid approach that combines Kubernetes for the application layer with external managed databases to balance operational complexity and performance needs.*
